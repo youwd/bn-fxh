@@ -1,0 +1,22 @@
+.lucky-body {
+  text-align: center;
+
+  .result {
+    font-size: 66px;
+    line-height: 6;
+  }
+
+  button {
+    padding: 10px 0;
+    border-radius: 10px;
+    background-color: #12a4ff;
+    color: #fff;
+    font-size: 20px;
+    width: 300px;
+    margin: 0 auto;
+  }
+
+  .button-end {
+    background-color: #ff006b;
+  }
+}
