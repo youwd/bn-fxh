@@ -2,8 +2,8 @@
   text-align: center;
 
   .result {
-    font-size: 66px;
-    line-height: 6;
+    font-size: 60px;
+    // line-height: 6;
   }
 
   button {
@@ -18,5 +18,22 @@
 
   .button-end {
     background-color: #ff006b;
+  }
+
+  .table{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    padding: 20px 0 50px 0;
+  }
+
+  table{
+    border-collapse: collapse;
+  }
+  table,th,td{
+    border:1px,solid,black;
+  }
+  .table table:not(:first-child){
+    border-left: none;
   }
 }

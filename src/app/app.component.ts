@@ -1,20 +1,30 @@
 import { Component } from '@angular/core';
-
+import * as list from './config';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  public lucky = '幸运儿';  // 页面显示结果
+
+
+  public res = list.res;
+  public title = this.res.title;  // 页面标题
   public isStart = true;   // 控制开始 结束按钮显示
 
-  private list = ['蔡威威', '曾培林', '曾智成', '陈国军', '陈惠勇', '陈扬帆', '迟海', '邓永明',
-    '丁俊杰', '管信太', '郭振强', '何玮婷', '黄仙龙', '胡东阳', '柯肇丰', '寇海燕', '蓝锦玉', '林燕辉',
-    '刘少勇', 'Louis', 'NICKO', '王翠莲', '王福厚', '王悦', '翁茂春', '温宇强', '吴胜杰',
-    '吴祖贤', '肖雨薇', '谢彪飞', '许勇滨', '杨税令', '叶孟', '游伟东', '郑启辰', '钟鑫火'];
-  private length = this.list.length;
+  public length = this.res.list.length;
+  public groupLength = Math.floor(this.length / 2);
   private time: any;  // 定时器
+
+  public resList = this.res.list;
+
+  public UIList = [];
+
+  constructor() {
+    // 执行初始化操作
+    this.UIList.push(this.resList.slice(0, this.length / 2 + 1));
+    this.UIList.push(this.resList.slice(this.length / 2 + 1));
+  }
 
   /**
    * 开始抽奖
@@ -22,10 +32,31 @@ export class AppComponent {
   public start() {
     this.isStart = false;
     this.time = setInterval(() => {
-      const index = Math.floor(Math.random() * this.length);
-      // console.log(index);
-      this.lucky = this.list[index];
+      String.fromCharCode();
+      this.resList = this.shuffle(this.res.list);
+      this.UIList = [];
+      this.UIList.push(this.resList.slice(0, this.length / 2 + 1));
+      this.UIList.push(this.resList.slice(this.length / 2 + 1));
     }, 100);
+  }
+
+  /**
+   * 随机数算法
+   * @param arr 
+   */
+  shuffle(arr) {
+    var len = arr.length;
+    for (var i = 0; i < len - 1; i++) {
+      var idx = Math.floor(Math.random() * (len - i));
+      var temp = arr[idx];
+      arr[idx] = arr[len - i - 1];
+      arr[len - i - 1] = temp;
+    }
+    return arr;
+  }
+
+  groupNameByIndex(index: number) {
+    return String.fromCharCode(65 + index);
   }
 
   /**

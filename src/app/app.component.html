@@ -1,6 +1,25 @@
 <div class="lucky-body">
-  <div class="result">{{lucky}}</div>
+  <div class="result">{{title}}</div>
+  <!-- <div>{{resList.slice(0,length/2).join(',')}}</div>
+  <div>{{resList.slice(length/2).join(',')}}</div> -->
+  <div class="table">
+    <table border="1" *ngFor="let group of UIList;let groupIndex = index">
+      <tr>
+        <th colspan="3" bgcolor="#448AFF">{{groupNameByIndex(groupIndex)}}组</th>
+      </tr>
+      <tr>
+        <td>序号</td>
+        <td>姓名</td>
+        <td>团队</td>
+      </tr>
+      <tr *ngFor="let item of group;let itemIndex = index">
+        <td>{{itemIndex + 1 + groupIndex*(groupLength)}}</td>
+        <td style="padding: 0 10px;">{{item.name}}</td>
+        <td style="padding: 0 10px;">{{item.team}}</td>
+      </tr>
+    </table>
+  </div>
+
   <button class="button-start" (click)="start()" *ngIf="isStart">开始</button>
   <button class="button-end" (click)="stop()" *ngIf="!isStart">结束</button>
 </div>
-
