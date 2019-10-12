@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ElectronService } from './core/services';
+
 import * as list from './config';
 @Component({
   selector: 'app-root',
@@ -20,16 +22,32 @@ export class AppComponent {
 
   public UIList = [];
 
-  constructor() {
+  constructor(
+    public electronService: ElectronService,
+  ) {
     // 执行初始化操作
-    this.UIList.push(this.resList.slice(0, this.groupLength ));
-    this.UIList.push(this.resList.slice( this.groupLength));
+    this.UIList.push(this.resList.slice(0, this.groupLength));
+    this.UIList.push(this.resList.slice(this.groupLength));
+
+
+    if (electronService.isElectron) {
+      console.log(process.env);
+      console.log('Mode electron');
+      console.log('Electron ipcRenderer', electronService.ipcRenderer);
+      console.log('NodeJS childProcess', electronService.childProcess);
+    } else {
+      console.log('Mode web');
+    }
   }
 
   /**
    * 开始抽奖
    */
   public start() {
+
+
+    this.playPingPong();
+
     this.isStart = false;
     this.time = setInterval(() => {
       String.fromCharCode();
@@ -67,4 +85,8 @@ export class AppComponent {
     this.isStart = true;
   }
 
+
+  public playPingPong() {
+    
+  }
 }
