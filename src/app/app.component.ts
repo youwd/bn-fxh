@@ -13,7 +13,7 @@ export class AppComponent {
   public isStart = true;   // 控制开始 结束按钮显示
 
   public length = this.res.list.length;
-  public groupLength = Math.floor(this.length / 2);
+  public groupLength = Math.ceil(this.length / 2);
   private time: any;  // 定时器
 
   public resList = this.res.list;
@@ -22,8 +22,8 @@ export class AppComponent {
 
   constructor() {
     // 执行初始化操作
-    this.UIList.push(this.resList.slice(0, this.length / 2 + 1));
-    this.UIList.push(this.resList.slice(this.length / 2 + 1));
+    this.UIList.push(this.resList.slice(0, this.groupLength ));
+    this.UIList.push(this.resList.slice( this.groupLength));
   }
 
   /**
@@ -35,8 +35,8 @@ export class AppComponent {
       String.fromCharCode();
       this.resList = this.shuffle(this.res.list);
       this.UIList = [];
-      this.UIList.push(this.resList.slice(0, this.length / 2 + 1));
-      this.UIList.push(this.resList.slice(this.length / 2 + 1));
+      this.UIList.push(this.resList.slice(0, this.groupLength));
+      this.UIList.push(this.resList.slice(this.groupLength));
     }, 100);
   }
 

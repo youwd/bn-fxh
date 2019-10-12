@@ -1,5 +1,5 @@
 export const res = {
-    "title": "第39周分享会分组名单",
+    "title": "第41周分享会分组名单",
     "list": [
         {
             team: "CTO",
@@ -39,9 +39,6 @@ export const res = {
         {
             team: "五敲",
             name: "游海山",
-        }, {
-            team: "五敲",
-            name: "林新建",
         }, {
             team: "五敲",
             name: "李发亮",
