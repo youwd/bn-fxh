@@ -1,39 +1,90 @@
 .lucky-body {
   text-align: center;
+  padding: 20px;
+
+  .toolbar {
+    text-align: left;
+  }
+
+
+  .title {
+    margin: 20px 0;
+    font-size: 30px;
+
+    input {
+      width: 600px;
+    }
+  }
+
 
   .result {
-    font-size: 30px;
-    // line-height: 6;
+    .tableTool {
+      text-align: left;
+
+      .addUser {
+        margin-bottom: 20px;
+      }
+    }
+
+
+
+
+    .editable-row-operations a {
+      margin-right: 8px;
+    }
+
+    .luckyButton {
+      padding: 10px 0;
+      border-radius: 10px;
+      background-color: #12a4ff;
+      color: #fff;
+      font-size: 20px;
+      width: 300px;
+      margin: 0 auto;
+    }
+
+    .button-end {
+      background-color: #ff006b;
+    }
   }
 
-  button {
-    padding: 10px 0;
-    border-radius: 10px;
-    background-color: #12a4ff;
-    color: #fff;
-    font-size: 20px;
-    width: 300px;
-    margin: 0 auto;
-  }
 
-  .button-end {
-    background-color: #ff006b;
-  }
-
-  .table{
+  .table {
     display: flex;
     width: 100%;
     justify-content: center;
     padding: 20px 0 50px 0;
   }
 
-  table{
+  table {
     border-collapse: collapse;
   }
-  table,th,td{
-    border:1px,solid,black;
+
+  table,
+  th,
+  td {
+    border: 1px, solid, black;
   }
-  .table table:not(:first-child){
+
+  .table table:not(:first-child) {
     border-left: none;
+  }
+
+
+
+}
+
+.newPersonModel {
+  .item {
+    display: flex;
+    line-height: 32px;
+padding:0 40px;
+    input {
+      width: 200px;
+    }
+  }
+
+  .item:not(:first-child) {
+    margin-top: 20px;
   }
 }
