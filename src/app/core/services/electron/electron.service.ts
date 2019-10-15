@@ -31,4 +31,28 @@ export class ElectronService {
       this.fs = window.require('fs');
     }
   }
+
+  /**
+   * 读取配置文件
+   * @param fileName 文件路径
+   */
+  readFile(fileName: string) {
+    return new Promise(function (resolve, reject) {
+      fs.readFile(fileName, function (error, data) {
+        if (error) return reject(error);
+        resolve(data);
+      });
+    });
+  };
+
+
+  writeFile(fileName: string, content: any) {
+    console.log("准备写入文件:",fileName);
+    return new Promise(function (resolve, reject) {
+      fs.writeFile(fileName, content, function (error) {
+        if (error) return reject(error);
+        console.log("写入文件成功");
+      });
+    });
+  }
 }

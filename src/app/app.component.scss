@@ -4,6 +4,8 @@
 
   .toolbar {
     text-align: left;
+    display: flex;
+    justify-content: space-between;
   }
 
 
@@ -54,10 +56,13 @@
     width: 100%;
     justify-content: center;
     padding: 20px 0 50px 0;
+    flex-wrap: wrap;
   }
 
   table {
     border-collapse: collapse;
+    margin-bottom: 10px;
+    margin-right: 10px;
   }
 
   table,
@@ -66,9 +71,9 @@
     border: 1px, solid, black;
   }
 
-  .table table:not(:first-child) {
-    border-left: none;
-  }
+  // .table table:not(:first-child) {
+  //   border-left: none;
+  // }
 
 
 

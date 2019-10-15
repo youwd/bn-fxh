@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ElectronService } from './core/services';
 import * as list from './config';
 import { DataTableModel, PersonModel } from './type';
+import * as path from 'path';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +10,13 @@ import { DataTableModel, PersonModel } from './type';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+  // public configPath = path.join(__dirname, '/assets/config.json');
+  // public configPath = './assets/config.json';
+  public configPath = './dist/assets/config.json';
+
+
+
   /**新增人员对话框 */
   isVisible = false;
 
@@ -20,7 +28,7 @@ export class AppComponent {
 
   public person: PersonModel = new PersonModel();
 
-  public title = this.res.title;  // 页面标题
+  public title: string = this.res.title;   // 页面标题
   public title_Temp = this.title; // 编辑时标题temp
 
   public isStart = true;   // 控制开始 结束按钮显示
@@ -30,29 +38,51 @@ export class AppComponent {
   private time: any;  // 定时器
 
 
-  public dataSet = this.res.list;
-  public groupLength = Math.ceil(this.dataSet.length / 2);
+  public dataSet: PersonModel[] = this.res.list;
+  public groupNumber: number = 2;  // 分组数，默认为2组
+  public groupLength = Math.ceil(this.dataSet.length / this.groupNumber);
 
   public UIList = [];
 
   constructor(
     public electronService: ElectronService,
   ) {
-    /**重构数据结构 */
-    this.updateEditCache();
 
-    // 执行初始化操作
-    this.UIList = this.initUIList();
+
 
     if (electronService.isElectron) {
       console.log(process.env);
       console.log('Mode electron');
       console.log('Electron ipcRenderer', electronService.ipcRenderer);
       console.log('NodeJS childProcess', electronService.childProcess);
+      this.asyncReadFile(this.configPath);
     } else {
       console.log('Mode web');
+      /**重构数据结构 */
+      this.updateEditCache();
+
+      // 执行初始化操作
+      this.UIList = this.initUIList();
     }
+
   }
+
+
+  async asyncReadFile(fileName) {
+    const f1 = await this.electronService.readFile(fileName);
+    this.res = JSON.parse(f1.toString());
+    this.dataSet = this.res.list;
+    this.title = this.res.title;   // 页面标题
+    this.title_Temp = this.title; // 编辑时标题temp
+    this.groupLength = Math.ceil(this.dataSet.length / this.groupNumber);
+    console.log(this.dataSet);
+
+    /**重构数据结构 */
+    this.updateEditCache();
+
+    // 执行初始化操作
+    this.UIList = this.initUIList();
+  };
 
   /**
    * 开始抽奖
@@ -86,12 +116,18 @@ export class AppComponent {
     return String.fromCharCode(65 + index);
   }
 
+  groupNumberChange() {
+    this.UIList = this.initUIList();
+  }
+
   /**分组表格初始化 */
   initUIList() {
+    this.groupLength = Math.ceil(this.dataSet.length / this.groupNumber);
     const UIList = [];
+    for (let index = 0; index < this.groupNumber; index++) {
+      UIList.push(this.dataSet.slice(index * this.groupLength, this.groupLength * (index + 1)));
 
-    UIList.push(this.dataSet.slice(0, this.groupLength));
-    UIList.push(this.dataSet.slice(this.groupLength));
+    }
     return UIList;
   }
 
@@ -111,9 +147,20 @@ export class AppComponent {
     this.isEdit = false;
 
     this.title = this.title_Temp;
-    this.groupLength = Math.ceil(this.dataSet.length / 2);
+    this.groupLength = Math.ceil(this.dataSet.length / this.groupNumber);
     this.UIList = this.initUIList();
 
+    this.res.list = this.arraySort(this.dataSet, 'team');
+    this.res.title = this.title;
+    this.electronService.writeFile(this.configPath, JSON.stringify(this.res));
+  }
+
+  arraySort(array, str) {
+    array.sort(function (a, b) {
+      return a[str].localeCompare(b[str]);
+    });
+    console.log(array);
+    return array;
   }
 
   /**
@@ -167,6 +214,7 @@ export class AppComponent {
    * 表格 编辑 初始化修改数据结构
    */
   updateEditCache(): void {
+    this.dataSet = this.arraySort(this.dataSet, 'team');
     this.dataSet.forEach((item, i) => {
       item.index = i;
       this.editCache[i] = {
