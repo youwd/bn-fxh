@@ -12,8 +12,8 @@ import * as path from 'path';
 export class AppComponent {
 
   // public configPath = path.join(__dirname, '/assets/config.json');
-  // public configPath = './assets/config.json';
-  public configPath = './dist/assets/config.json';
+  public configPath = './assets/config.json';
+  // public configPath = './dist/assets/config.json';
 
 
 
@@ -52,9 +52,9 @@ export class AppComponent {
 
     if (electronService.isElectron) {
       console.log(process.env);
-      console.log('Mode electron');
-      console.log('Electron ipcRenderer', electronService.ipcRenderer);
-      console.log('NodeJS childProcess', electronService.childProcess);
+      // console.log('Mode electron');
+      // console.log('Electron ipcRenderer', electronService.ipcRenderer);
+      // console.log('NodeJS childProcess', electronService.childProcess);
       this.asyncReadFile(this.configPath);
     } else {
       console.log('Mode web');
@@ -75,7 +75,7 @@ export class AppComponent {
     this.title = this.res.title;   // 页面标题
     this.title_Temp = this.title; // 编辑时标题temp
     this.groupLength = Math.ceil(this.dataSet.length / this.groupNumber);
-    console.log(this.dataSet);
+    // console.log(this.dataSet);
 
     /**重构数据结构 */
     this.updateEditCache();
@@ -159,7 +159,7 @@ export class AppComponent {
     array.sort(function (a, b) {
       return a[str].localeCompare(b[str]);
     });
-    console.log(array);
+    // console.log(array);
     return array;
   }
 
@@ -245,4 +245,30 @@ export class AppComponent {
     this.person = new PersonModel();
   }
 
+  /**
+   * 点击 选择队长，重点标注
+   */
+  public clickElement = [];
+  onSelectCaptainClick($event: any, groupIndex: number, itemIndex: number) {
+    // console.log($event.target.nodeName);
+    // console.log($event.target.parentNode);
+
+    // 将选中的元素置顶
+    const selectTemp = this.UIList[groupIndex][itemIndex];
+    this.UIList[groupIndex].splice(itemIndex, 1)
+    this.UIList[groupIndex].unshift(selectTemp);
+
+    // 改变选中元素的样式
+    let element = $event.target;
+
+    if (element.nodeName === "TD") {
+      element = element.parentNode;
+    }
+
+    if (this.clickElement.length && this.clickElement[groupIndex]) {
+      this.clickElement[groupIndex].style.background = "#fff";
+    }
+    element.style.background = "#bfe6d7";
+    this.clickElement[groupIndex] = element;
+  }
 }

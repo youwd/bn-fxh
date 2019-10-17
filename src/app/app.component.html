@@ -7,7 +7,8 @@
     </button>
 
     <div *ngIf="!isEdit">
-      分组数：<nz-input-number [(ngModel)]="groupNumber" [nzMin]="1" [nzMax]="10" [nzStep]="1" (ngModelChange)="groupNumberChange()"></nz-input-number>
+      分组数：<nz-input-number [(ngModel)]="groupNumber" [nzMin]="1" [nzMax]="10" [nzStep]="1"
+        (ngModelChange)="groupNumberChange()"></nz-input-number>
     </div>
 
     <nz-button-group *ngIf="isEdit">
@@ -106,7 +107,8 @@
             <td>姓名</td>
             <td>团队</td>
           </tr>
-          <tr *ngFor="let item of group;let itemIndex = index">
+          <tr *ngFor="let item of group;let itemIndex = index"
+            (click)="onSelectCaptainClick($event,groupIndex,itemIndex)">
             <td>{{itemIndex + 1}}</td>
             <td style="padding: 0 10px;">{{item.name}}</td>
             <td style="padding: 0 10px; width: 135px;">{{item.team}}</td>
@@ -117,6 +119,5 @@
       <button class="luckyButton button-end" (click)="stop()" *ngIf="!isStart">结束</button>
     </div>
 
-  </div>
 
-</div>
+  </div>
