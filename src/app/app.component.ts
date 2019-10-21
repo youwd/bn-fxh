@@ -71,7 +71,7 @@ export class AppComponent {
   }
 
 
-  async asyncReadFile(fileName) {
+  async asyncReadFile(fileName: string) {
     const f1 = await this.electronService.readFile(fileName);
     this.res = JSON.parse(f1.toString());
     this.dataSet = this.res.list;
@@ -121,6 +121,9 @@ export class AppComponent {
   }
 
   groupNumberChange() {
+    // 队长数组需要置空
+    this.captain.length = 0;
+
     this.UIList = this.initUIList();
   }
 
@@ -157,6 +160,9 @@ export class AppComponent {
     this.res.list = this.arraySort(this.dataSet, 'team');
     this.res.title = this.title;
     this.electronService.writeFile(this.configPath, JSON.stringify(this.res));
+
+    // 队长数组需要置空
+    this.captain.length = 0;
   }
 
   arraySort(array, str) {
