@@ -108,7 +108,8 @@
             <td>团队</td>
           </tr>
           <tr *ngFor="let item of group;let itemIndex = index"
-            (click)="onSelectCaptainClick($event,groupIndex,itemIndex)">
+            (click)="onSelectCaptainClick($event,groupIndex,itemIndex,item)"
+            [ngStyle]="groupIndex<=captain.length && captain[groupIndex]?.index && itemIndex===0 && {'background-color':'#bfe6d7'}">
             <td>{{itemIndex + 1}}</td>
             <td style="padding: 0 10px;">{{item.name}}</td>
             <td style="padding: 0 10px; width: 135px;">{{item.team}}</td>

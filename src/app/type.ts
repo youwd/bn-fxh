@@ -12,3 +12,8 @@ export class PersonModel {
     team: string = "";
     name: string = "";
 }
+
+export type CaptainModel = {
+    element: Object;
+    data: PersonModel;
+}

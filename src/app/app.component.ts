@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ElectronService } from './core/services';
 import * as list from './config';
-import { DataTableModel, PersonModel } from './type';
+import { DataTableModel, PersonModel, CaptainModel } from './type';
 import * as path from 'path';
 
 @Component({
@@ -11,6 +11,7 @@ import * as path from 'path';
 })
 export class AppComponent {
 
+  // 人员配置文件
   // public configPath = path.join(__dirname, '/assets/config.json');
   public configPath = './assets/config.json';
   // public configPath = './dist/assets/config.json';
@@ -39,9 +40,11 @@ export class AppComponent {
 
 
   public dataSet: PersonModel[] = this.res.list;
-  public groupNumber: number = 2;  // 分组数，默认为2组
+  /**分组数，默认为2组*/
+  public groupNumber: number = 2;
+  /**每组人数 */
   public groupLength = Math.ceil(this.dataSet.length / this.groupNumber);
-
+  /**前端表格展示 */
   public UIList = [];
 
   constructor(
@@ -92,6 +95,7 @@ export class AppComponent {
     this.time = setInterval(() => {
       // String.fromCharCode();
       this.dataSet = this.shuffle(this.dataSet);
+      this.resetByCaptain();
       this.UIList = this.initUIList();
     }, 100);
   }
@@ -245,30 +249,70 @@ export class AppComponent {
     this.person = new PersonModel();
   }
 
+
+  /**队长数组 */
+  public captain: PersonModel[] = [];
   /**
-   * 点击 选择队长，重点标注
+   * 点击行 选择队长，重点标注
+   * @param $event 选中的行
+   * @param groupIndex 在第几组
+   * @param itemIndex 组内第几号
+   * @param data 选中人员信息
    */
-  public clickElement = [];
-  onSelectCaptainClick($event: any, groupIndex: number, itemIndex: number) {
+  onSelectCaptainClick($event: any, groupIndex: number, itemIndex: number, data: PersonModel) {
     // console.log($event.target.nodeName);
     // console.log($event.target.parentNode);
 
-    // 将选中的元素置顶
-    const selectTemp = this.UIList[groupIndex][itemIndex];
-    this.UIList[groupIndex].splice(itemIndex, 1)
-    this.UIList[groupIndex].unshift(selectTemp);
+    const { captain, groupNumber, dataSet, groupLength } = this;
 
-    // 改变选中元素的样式
-    let element = $event.target;
+    // 点击的行 在队长数组中的位置
+    const captainIndex = captain.findIndex(item => {
+      return item.index === data.index;
+    });
+    //如果点击的队长 已经在数组中，则为取消选中操作
+    if (captainIndex !== -1) {
+      captain[captainIndex] = new PersonModel();
+    } else {
+      // 查找第一个空的对象的队长index
+      const emptyIndex = captain.findIndex(item => {
+        return !item.index;
+      });
 
-    if (element.nodeName === "TD") {
-      element = element.parentNode;
+      /**如果队长数组已经满了 */
+      if (captain.length === groupNumber) {
+        let index = groupIndex;
+        if (captain[index].index && emptyIndex !== -1) {
+          // 如果该队有队长了，并且队长数组中有空对象，则把数据附在空对象中
+          index = emptyIndex;
+        }
+        captain[index] = data;
+      } else {
+        if (emptyIndex !== -1) {
+          // 如果队长数组中存在空对象，则赋予第一个空对象
+          captain[emptyIndex] = data;
+        } else {
+          /**加入新加入的队长 */
+          captain.push(data);
+        }
+      }
+
     }
 
-    if (this.clickElement.length && this.clickElement[groupIndex]) {
-      this.clickElement[groupIndex].style.background = "#fff";
-    }
-    element.style.background = "#bfe6d7";
-    this.clickElement[groupIndex] = element;
+    this.resetByCaptain();
+    this.UIList = this.initUIList();
+  }
+
+  /**
+   * 根据队长数组，重排整个名单
+   */
+  resetByCaptain() {
+    const { dataSet, captain, groupLength } = this;
+    captain.forEach((element, index) => {
+      if (element.index) {
+        const tempIndex = dataSet.findIndex(item => (element.index === item.index));
+        dataSet[tempIndex] = dataSet[index * groupLength];
+        dataSet[index * groupLength] = element;
+      }
+    });
   }
 }
