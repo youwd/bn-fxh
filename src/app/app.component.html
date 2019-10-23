@@ -1,7 +1,7 @@
 <div class="lucky-body">
   <!-- 工具栏 -->
   <div class="toolbar">
-    <button nz-button nzType="primary" (click)="isEdit = true" *ngIf="!isEdit">
+    <button nz-button nzType="primary" (click)="startAllEdit()" *ngIf="!isEdit">
       <i nz-icon nzType="edit" nzTheme="outline"></i>
       编辑
     </button>
@@ -77,15 +77,19 @@
             </td>
             <td [nzAlign]="'center'">
               <div class="editable-row-operations">
-                <ng-container *ngIf="!editCache[data.index].edit; else saveTpl">
+                <ng-container *ngIf="!editCache[data.index].edit&&!editCache[data.index].leave">
                   <a (click)="startEdit(data.index)">编辑</a>
+                  <a (click)="leaveClick(data.index)">请假</a>
                   <a nz-popconfirm nzTitle="你确定要删除  {{editCache[data.index].data.name}}?"
-                    (nzOnConfirm)="deleteEdit(data.index)">删除</a>
+                    (nzOnConfirm)="deleteEdit(data.index,i)">删除</a>
                 </ng-container>
-                <ng-template #saveTpl>
+                <ng-container *ngIf="editCache[data.index].edit&&!editCache[data.index].leave">
                   <a (click)="saveEdit(data.index)">保存</a>
                   <a (click)="cancelTEdit(data.index)">取消</a>
-                </ng-template>
+                </ng-container>
+                <ng-container *ngIf="!editCache[data.index].edit&&editCache[data.index].leave">
+                  <a (click)="leaveClick(data.index)" style="color: coral;">取消请假</a>
+                </ng-container>
               </div>
             </td>
           </tr>

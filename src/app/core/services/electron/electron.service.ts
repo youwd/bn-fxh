@@ -52,6 +52,7 @@ export class ElectronService {
       fs.writeFile(fileName, content, function (error) {
         if (error) return reject(error);
         console.log("写入文件成功");
+        resolve("SUCCESS!");
       });
     });
   }

@@ -1,5 +1,6 @@
 export type DataTableModel = {
     edit: boolean;
+    leave: boolean;
     data: {
         index: number;
         team: string;

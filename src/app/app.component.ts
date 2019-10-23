@@ -146,21 +146,38 @@ export class AppComponent {
     this.isStart = true;
   }
 
-
   /**
    * 开始编辑
    */
-  public okEdit() {
+  startAllEdit(){
+    this.isEdit = true;
+    this.dataSet = this.res.list;
+  }
+
+  /**
+   * 保存编辑
+   */
+  async okEdit() {
     this.isEdit = false;
 
     this.title = this.title_Temp;
+
+    // 更新配置文件里的数据
+    this.res.list = this.arraySort(this.dataSet, 'team');
+    this.res.title = this.title;
+
+    // 将请假的人从dataSet中剔除
+    this.dataSet = [];
+    this.editCache.forEach(element => {
+      if(!element.leave){
+        this.dataSet.push(element.data);
+      }
+    });
+
     this.groupLength = Math.ceil(this.dataSet.length / this.groupNumber);
     this.UIList = this.initUIList();
 
-    this.res.list = this.arraySort(this.dataSet, 'team');
-    this.res.title = this.title;
-    this.electronService.writeFile(this.configPath, JSON.stringify(this.res));
-
+    await this.electronService.writeFile(this.configPath, JSON.stringify(this.res));
     // 队长数组需要置空
     this.captain.length = 0;
   }
@@ -177,8 +194,16 @@ export class AppComponent {
    * 取消编辑
    */
   public cancelEdit() {
-    this.isEdit = false;
     this.title_Temp = this.title;
+    this.dataSet = this.res.list;
+    this.editCache.length = 0;
+    /**重构数据结构 */
+    this.updateEditCache();
+
+    // 执行初始化操作
+    this.UIList = this.initUIList();
+    this.isEdit = false;
+
   }
 
   /**
@@ -190,6 +215,13 @@ export class AppComponent {
   }
 
   /**
+    * 表格 行请假按钮
+    * @param id 
+    */
+  leaveClick(id: number): void {
+    this.editCache[id].leave = !this.editCache[id].leave;
+  }
+  /**
    * 表格 行取消编辑
    * @param id 
    */
@@ -197,7 +229,8 @@ export class AppComponent {
     const index = this.dataSet.findIndex(item => item.index === id);
     this.editCache[id] = {
       data: { ...this.dataSet[index] },
-      edit: false
+      edit: false,
+      leave: false
     };
   }
 
@@ -214,10 +247,11 @@ export class AppComponent {
   /**
    * 表格 删除行
    * @param id 
+   * @param index 
    */
-  deleteEdit(id: number): void {
+  deleteEdit(id: number, index: number): void {
     this.dataSet = this.dataSet.filter(d => d.index !== id);
-    this.editCache[id].edit = false;
+    this.editCache.splice(index, 1);
   }
 
   /**
@@ -229,6 +263,7 @@ export class AppComponent {
       item.index = i;
       this.editCache[i] = {
         edit: false,
+        leave: false,
         data: { ...item }
       };
     });
@@ -251,7 +286,7 @@ export class AppComponent {
       team: this.person.team,
     }
     this.dataSet = [...this.dataSet, newPerson];
-    this.editCache.push({ data: newPerson, edit: false });
+    this.editCache.push({ data: newPerson, leave: false, edit: false });
     this.person = new PersonModel();
   }
 
