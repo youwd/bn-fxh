@@ -149,7 +149,7 @@ export class AppComponent {
   /**
    * 开始编辑
    */
-  startAllEdit(){
+  startAllEdit() {
     this.isEdit = true;
     this.dataSet = this.res.list;
   }
@@ -169,7 +169,7 @@ export class AppComponent {
     // 将请假的人从dataSet中剔除
     this.dataSet = [];
     this.editCache.forEach(element => {
-      if(!element.leave){
+      if (!element.leave) {
         this.dataSet.push(element.data);
       }
     });
@@ -302,9 +302,11 @@ export class AppComponent {
    */
   onSelectCaptainClick($event: any, groupIndex: number, itemIndex: number, data: PersonModel) {
     // console.log($event.target.nodeName);
+    // console.log(data);
+
     // console.log($event.target.parentNode);
 
-    const { captain, groupNumber, dataSet, groupLength } = this;
+    const { captain, groupNumber } = this;
 
     // 点击的行 在队长数组中的位置
     const captainIndex = captain.findIndex(item => {
@@ -316,13 +318,13 @@ export class AppComponent {
     } else {
       // 查找第一个空的对象的队长index
       const emptyIndex = captain.findIndex(item => {
-        return !item.index;
+        return item.index === null;
       });
 
       /**如果队长数组已经满了 */
       if (captain.length === groupNumber) {
         let index = groupIndex;
-        if (captain[index].index && emptyIndex !== -1) {
+        if (captain[index].index !== null && emptyIndex !== -1) {
           // 如果该队有队长了，并且队长数组中有空对象，则把数据附在空对象中
           index = emptyIndex;
         }
@@ -349,7 +351,7 @@ export class AppComponent {
   resetByCaptain() {
     const { dataSet, captain, groupLength } = this;
     captain.forEach((element, index) => {
-      if (element.index) {
+      if (element.index !== null) {
         const tempIndex = dataSet.findIndex(item => (element.index === item.index));
         dataSet[tempIndex] = dataSet[index * groupLength];
         dataSet[index * groupLength] = element;
